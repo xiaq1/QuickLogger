@@ -9,8 +9,8 @@
  */
 
 
-#ifndef _LOGGER_MESSAGEASSEMBLE_H
-#define _LOGGER_MESSAGEASSEMBLE_H
+#ifndef _LOG_MESSAGEASSEMBLE_H
+#define _LOG_MESSAGEASSEMBLE_H
 
 
 #ifdef __cplusplus
@@ -25,39 +25,39 @@ extern "C" {
 
 
 /**
- @def LOGGER_SEPERATOR_CHAR
+ @def LOG_SEPERATOR_CHAR
  @brief character seperator used to split each aspect of logger entry
  */
-#define LOGGER_SEPERATOR_CHAR ('|')
-#define LOGGER_SEPERATOR_CHAR_SIZE (1)
+#define LOG_SEPERATOR_CHAR ('|')
+#define LOG_SEPERATOR_CHAR_SIZE (1)
 
 /* sizes include terminating \0 char */
-#define LOGGER_TIMESTAMP_SIZE        (18U)     /* size of the timestamp string */
-#define LOGGER_FUNCTIONNAME_SIZE     (62U)
-#define LOGGER_FILENAME_SIZE         (20U)
-#define LOGGER_LINENUMBER_SIZE       (6U)
-#define LOGGER_SEVERITY_SIZE         (6U)
-#define LOGGER_MESSAGE_SIZE          (1024U)
+#define LOG_TIMESTAMP_SIZE        (18U)     /* size of the timestamp string */
+#define LOG_FUNCTIONNAME_SIZE     (62U)
+#define LOG_FILENAME_SIZE         (20U)
+#define LOG_LINENUMBER_SIZE       (6U)
+#define LOG_SEVERITY_SIZE         (6U)
+#define LOG_MESSAGE_SIZE          (1024U)
 
 
 /**
- @def LOGGER_MAX_LOGGER_CHARS
+ @def LOG_MAX_LOG_CHARS
  @brief max size of user print message
  */
-#define LOGGER_MAX_LOGGER_CHARS \
-    ( LOGGER_TIMESTAMP_SIZE + \
-    LOGGER_FUNCTIONNAME_SIZE + \
-    LOGGER_FILENAME_SIZE + \
-    LOGGER_LINENUMBER_SIZE + \
-    LOGGER_SEVERITY_SIZE + \
-    LOGGER_MESSAGE_SIZE )
+#define LOG_MAX_LOG_CHARS \
+    ( LOG_TIMESTAMP_SIZE + \
+    LOG_FUNCTIONNAME_SIZE + \
+    LOG_FILENAME_SIZE + \
+    LOG_LINENUMBER_SIZE + \
+    LOG_SEVERITY_SIZE + \
+    LOG_MESSAGE_SIZE )
 
 
 /**
- @def LOGGER_LOG_ENTRY_SIZE
+ @def LOG_LOG_ENTRY_SIZE
  @brief maxumum size per entry in log
  */
-#define LOGGER_LOG_ENTRY_SIZE ( LOGGER_TIMESTAMP_SIZE + LOGGER_SEPERATOR_CHAR_SIZE + LOGGER_FUNCTIONNAME_SIZE + LOGGER_SEPERATOR_CHAR_SIZE + LOGGER_FILENAME_SIZE + LOGGER_SEPERATOR_CHAR_SIZE + LOGGER_LINENUMBER_SIZE + LOGGER_SEPERATOR_CHAR_SIZE + LOGGER_MAX_LOGGER_CHARS )
+#define LOG_LOG_ENTRY_SIZE ( LOG_TIMESTAMP_SIZE + LOG_SEPERATOR_CHAR_SIZE + LOG_FUNCTIONNAME_SIZE + LOG_SEPERATOR_CHAR_SIZE + LOG_FILENAME_SIZE + LOG_SEPERATOR_CHAR_SIZE + LOG_LINENUMBER_SIZE + LOG_SEPERATOR_CHAR_SIZE + LOG_MAX_LOG_CHARS )
 
 
 /**
@@ -80,7 +80,7 @@ void logger_assemble_string ( char * string, size_t string_size, char * timestam
  @param[out] stringSeverity returned logger level string
  @param[in] stringSize maximum chars to write to stringSeverity
  */
-void loggerLevelStringFromLevel ( LOGGER_LEVEL level, char * stringSeverity, uint8_t stringSize );
+void loggerLevelStringFromLevel ( LOG_LEVEL level, char * stringSeverity, uint8_t stringSize );
 
 
 /**
@@ -94,14 +94,14 @@ void loggerFileNameString ( char * stringFileName, uint8_t stringSize, char * fi
 
 
 
-#define LOGGER_TIMESTAMP_CHARS_MINIMUM 17
+#define LOG_TIMESTAMP_CHARS_MINIMUM 17
 
 
 /**
  @brief create current timestamp
  @details create in format printf("%02d:%02d:%02d %02d/%02d/%02d",hr,min,seconds,day,month,year)
  @param[out] stringTimeStamp timestamp string to write to
- @param[in] stringSize maximum number of chars to write timestamp to. must be greater than equal to #LOGGER_TIMESTAMP_CHARS_MINIMUM
+ @param[in] stringSize maximum number of chars to write timestamp to. must be greater than equal to #LOG_TIMESTAMP_CHARS_MINIMUM
  */
 void loggerGetTimeString ( char * stringTimestamp, size_t stringSize );
 

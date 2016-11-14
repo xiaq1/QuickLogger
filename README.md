@@ -3,10 +3,12 @@
 
 
 ##Usage
+scons -c
+scons 
 
 ```
 $cd $loggerlib_dir/example;
-chmod +x example_run.sh;
+#chmod +x example_run.sh;
 ./logger_run.sh
 ```
 

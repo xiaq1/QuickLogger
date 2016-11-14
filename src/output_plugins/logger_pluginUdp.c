@@ -73,9 +73,9 @@ static bool logger_udp_validateIpString ( char * ipAddrStr, size_t ipAddrStrLen 
     return isValidIpAddr;
 }
 
-LOGGER_STATUS logger_udp_initialize ( LOGGER_INI_SECTIONHANDLE paramBag )
+LOG_STATUS logger_udp_initialize ( LOG_INI_SECTIONHANDLE paramBag )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_FAILURE;
+    LOG_STATUS status = LOG_STATUS_FAILURE;
     
     char *ipAddress = NULL;
     size_t ipAddressLen = 0U;
@@ -92,12 +92,12 @@ LOGGER_STATUS logger_udp_initialize ( LOGGER_INI_SECTIONHANDLE paramBag )
         if ( logger_udp_validateIpString(ipAddress, ipAddressLen) == false )
         {
             LOGPRINT_LOG_E("ip param invalid");
-            status = LOGGER_STATUS_FAILURE_INVALID_PARAM;
+            status = LOG_STATUS_FAILURE_INVALID_PARAM;
         }
         else if ( ( portInt < 0 ) || ( portInt > 0xFFFFU ) )
         {
             LOGPRINT_LOG_E("port param invalid. Must be between 1 & 65,535 (%u)",portInt);
-            status = LOGGER_STATUS_FAILURE_INVALID_PARAM;
+            status = LOG_STATUS_FAILURE_INVALID_PARAM;
         }
         else
         {
@@ -120,23 +120,23 @@ LOGGER_STATUS logger_udp_initialize ( LOGGER_INI_SECTIONHANDLE paramBag )
             else
             {
                 LOGPRINT_LOG_I("Set output to udp");
-                status = LOGGER_STATUS_OK;
+                status = LOG_STATUS_OK;
             }
         }
     }
     else
     {
         LOGPRINT_LOG_E("Missing param either: ip or port");
-        status = LOGGER_STATUS_FAILURE_INVALID_PARAM;
+        status = LOG_STATUS_FAILURE_INVALID_PARAM;
     }
 
     return status;
 }
 
 
-LOGGER_STATUS logger_udp_terminate ( void )
+LOG_STATUS logger_udp_terminate ( void )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_FAILURE;
+    LOG_STATUS status = LOG_STATUS_FAILURE;
     
     if ( f_logger_udp != SOCKET_INVALID )
     {
@@ -147,7 +147,7 @@ LOGGER_STATUS logger_udp_terminate ( void )
         else
         {
             LOGPRINT_LOG_I("Terminated: udp");        
-            status = LOGGER_STATUS_OK;
+            status = LOG_STATUS_OK;
         }
         
         f_logger_udp = SOCKET_INVALID;
@@ -155,15 +155,15 @@ LOGGER_STATUS logger_udp_terminate ( void )
     else
     {
         LOGPRINT_LOG_I("Terminated: udp");        
-        status = LOGGER_STATUS_FAILURE_ALREADY_TERMINATED;
+        status = LOG_STATUS_FAILURE_ALREADY_TERMINATED;
     }
 
     return status;
 }
 
-LOGGER_STATUS logger_udp_transmit ( char * msg, size_t msgLen )
+LOG_STATUS logger_udp_transmit ( char * msg, size_t msgLen )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_FAILURE_INVALID_MESSAGE;
+    LOG_STATUS status = LOG_STATUS_FAILURE_INVALID_MESSAGE;
     
     LOGPRINT_ASSERT(f_logger_udp!=SOCKET_INVALID);
     LOGPRINT_ASSERT(msg!=NULL);
@@ -180,11 +180,11 @@ LOGGER_STATUS logger_udp_transmit ( char * msg, size_t msgLen )
     
     if ( charsSent >= msgLen )
     {
-        status = LOGGER_STATUS_OK;
+        status = LOG_STATUS_OK;
     }
     else
     {
-        LOGPRINT_LOG_E("Failed to send whole message. Only %d/%d sent",charsSent,msgLen);
+        LOGPRINT_LOG_E("Failed to send whole message. Only %zd/%zd sent",charsSent,msgLen);
     }
     
     return status;

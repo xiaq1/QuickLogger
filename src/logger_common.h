@@ -9,8 +9,8 @@
  */
 
 
-#ifndef _LOGGER_COMMON_H
-#define _LOGGER_COMMON_H
+#ifndef _LOG_COMMON_H
+#define _LOG_COMMON_H
 
 
 #ifdef __cplusplus
@@ -25,44 +25,44 @@ extern "C" {
 /**
  @brief current logger version
  */
-#define LOGGER_VERSION 1.0f
+#define LOG_VERSION 1.0f
 
 
 /**
- @enum _LOGGER_STATUS
+ @enum _LOG_STATUS
  @brief returned status codes from internal logger print functions \n
- #LOGGER_STATUS_OK all ok \n
- #LOGGER_STATUS_FAILURE generic failure \n
- #LOGGER_STATUS_FAILURE_NOT_WHOLE_MESSAGE_PRINTED failed to print whole message \n
- #LOGGER_STATUS_FAILURE_ALREADY_INITIALIZED could not initialize location as it is already set up
- #LOGGER_STATUS_FAILURE_ALREADY_TERMINATED could not terminate location as it is already terminated
- #LOGGER_STATUS_FAILURE_INVALID_MESSAGE could not print, invalid message
- #LOGGER_STATUS_FAILURE_INVALID_PARAM invalid parameter passed into function
+ #LOG_STATUS_OK all ok \n
+ #LOG_STATUS_FAILURE generic failure \n
+ #LOG_STATUS_FAILURE_NOT_WHOLE_MESSAGE_PRINTED failed to print whole message \n
+ #LOG_STATUS_FAILURE_ALREADY_INITIALIZED could not initialize location as it is already set up
+ #LOG_STATUS_FAILURE_ALREADY_TERMINATED could not terminate location as it is already terminated
+ #LOG_STATUS_FAILURE_INVALID_MESSAGE could not print, invalid message
+ #LOG_STATUS_FAILURE_INVALID_PARAM invalid parameter passed into function
  */
-typedef enum _LOGGER_STATUS
+typedef enum _LOG_STATUS
 {
-    LOGGER_STATUS_UNDEF = 0,    
-    LOGGER_STATUS_OK,
-    LOGGER_STATUS_FAILURE,
-    LOGGER_STATUS_FAILURE_NOT_WHOLE_MESSAGE_PRINTED,
-    LOGGER_STATUS_FAILURE_ALREADY_INITIALIZED,
-    LOGGER_STATUS_FAILURE_ALREADY_TERMINATED,
-    LOGGER_STATUS_FAILURE_INVALID_MESSAGE,
-    LOGGER_STATUS_FAILURE_INVALID_PARAM,
-    LOGGER_STATUS_LAST_VALUE,    
-} LOGGER_STATUS;
+    LOG_STATUS_UNDEF = 0,    
+    LOG_STATUS_OK,
+    LOG_STATUS_FAILURE,
+    LOG_STATUS_FAILURE_NOT_WHOLE_MESSAGE_PRINTED,
+    LOG_STATUS_FAILURE_ALREADY_INITIALIZED,
+    LOG_STATUS_FAILURE_ALREADY_TERMINATED,
+    LOG_STATUS_FAILURE_INVALID_MESSAGE,
+    LOG_STATUS_FAILURE_INVALID_PARAM,
+    LOG_STATUS_LAST_VALUE,    
+} LOG_STATUS;
 
 
-typedef uint32_t LOGGER_LEVEL_FLAGS;
+typedef uint32_t LOG_LEVEL_FLAGS;
 
 
 /**
  @brief internal structure holding all variables per logger handle
  */
-typedef struct _LOGGER_HANDLE_PRV
+typedef struct _LOG_HANDLE_PRV
 {
-    LOGGER_LEVEL_FLAGS loggerLevelsEnabled;
-} LOGGER_HANDLE_PRV;
+    LOG_LEVEL_FLAGS loggerLevelsEnabled;
+} LOG_HANDLE_PRV;
 
 
 
@@ -71,22 +71,28 @@ typedef struct _LOGGER_HANDLE_PRV
 
 
 /* Enable to trace any defects in DebugPrint */
-/* #define LOGGER_PRINT_LOGGER */
+/* #define LOG_PRINT_LOG */
 
-#ifdef LOGGER_PRINT_LOGGER
+#ifdef LOG_PRINT_LOG
 #include <stdio.h>
-#define LOGPRINT_LOG(level,format, ... ) \
+#define LOGPRINT_LOG(level,format... ) \
 do \
 { \
     fprintf (stdout,"logger %s (%s:%d): ",level,__FUNCTION__,__LINE__); \
-    fprintf (stdout, format, ##__VA_ARGS__ ); \
+    fprintf (stdout, ##format); \
     fprintf (stdout, "\n"); \
 } while (0)
 
-#define LOGPRINT_LOG_E(fmt, ... ) LOGPRINT_LOG("-ERROR-",fmt, ##__VA_ARGS__)
+/*
+#define LOGPRINT_LOG_E(fmt, ... ) LOGPRINT_LOG("-ERROR-",fmt, ####fmt)
 #define LOGPRINT_LOG_W(fmt, ... ) LOGPRINT_LOG("-WARN-",fmt, ##__VA_ARGS__)
 #define LOGPRINT_LOG_I(fmt, ... ) LOGPRINT_LOG("-INFO-",fmt, ##__VA_ARGS__)
+*/
 
+#define LOGPRINT_LOG_E(fmt... ) LOGPRINT_LOG("-ERROR-",##fmt)
+#define LOGPRINT_LOG_W(fmt... ) LOGPRINT_LOG("-WARN-", ##fmt)
+#define LOGPRINT_LOG_I(fmt... ) LOGPRINT_LOG("-INFO-", ##fmt)
+                                                       
 #define LOGPRINT_ASSERT(cond) \
 if ( (cond) != true ) \
 { \
@@ -105,4 +111,4 @@ if ( (cond) != true ) \
 #endif
 
 
-#endif /* _LOGGER_COMMON_H */
+#endif /* _LOG_COMMON_H */

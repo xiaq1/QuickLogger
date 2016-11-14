@@ -21,18 +21,18 @@ static pthread_mutex_t f_mutex_print = PTHREAD_MUTEX_INITIALIZER;
 static FILE * f_logger_file = NULL;
 
 
-LOGGER_STATUS logger_file_initialize ( LOGGER_INI_SECTIONHANDLE paramBag )
+LOG_STATUS logger_file_initialize ( LOG_INI_SECTIONHANDLE paramBag )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_FAILURE_INVALID_MESSAGE;
+    LOG_STATUS status = LOG_STATUS_FAILURE_INVALID_MESSAGE;
     
     if ( paramBag == NULL )
     {
-        status = LOGGER_STATUS_FAILURE_INVALID_PARAM;
+        status = LOG_STATUS_FAILURE_INVALID_PARAM;
         LOGPRINT_LOG_E("NULL param to : %s",__FUNCTION__);
     }
     else if ( f_logger_file != NULL )
     {
-        status = LOGGER_STATUS_FAILURE_ALREADY_INITIALIZED;
+        status = LOG_STATUS_FAILURE_ALREADY_INITIALIZED;
         LOGPRINT_LOG_E("already initialized (%s)",__FUNCTION__);        
     }
     else
@@ -44,36 +44,39 @@ LOGGER_STATUS logger_file_initialize ( LOGGER_INI_SECTIONHANDLE paramBag )
 
         if ( filePath )
         {
-            f_logger_file = fopen(filePath, "w");
+            //f_logger_file = fopen(filePath, "w");
+            f_logger_file = fopen(filePath, "a+");
             
             if ( f_logger_file != NULL )
             {
-                status = LOGGER_STATUS_OK;
-                LOGPRINT_LOG_I("Set output to file (%s",parambag->filePath);
+                status = LOG_STATUS_OK;
+                //LOGPRINT_LOG_I("Set output to file (%s",paramBag->filePath);
+                LOGPRINT_LOG_I("Set output to file (%s",filePath);
             }
             else
             {
-                LOGPRINT_LOG_E("Failed to open: %s",parambag->filePath);
+                //LOGPRINT_LOG_E("Failed to open: %s",paramBag->filePath);
+                LOGPRINT_LOG_E("Failed to open: %s",filePath);
             }
         }
         else
         {
             LOGPRINT_LOG_E("Missing param: output from configuration");
-            status = LOGGER_STATUS_FAILURE_INVALID_PARAM;
+            status = LOG_STATUS_FAILURE_INVALID_PARAM;
         }
     }
 
     return status;
 }
 
-LOGGER_STATUS logger_file_terminate ( void )
+LOG_STATUS logger_file_terminate ( void )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_FAILURE_INVALID_MESSAGE;
+    LOG_STATUS status = LOG_STATUS_FAILURE_INVALID_MESSAGE;
     
     if ( f_logger_file == NULL )
     {
         LOGPRINT_LOG_I("already terminated (%s)",__FUNCTION__);
-        status = LOGGER_STATUS_FAILURE_ALREADY_TERMINATED;
+        status = LOG_STATUS_FAILURE_ALREADY_TERMINATED;
     }
     else if ( fclose(f_logger_file) != 0 )
     {
@@ -83,15 +86,15 @@ LOGGER_STATUS logger_file_terminate ( void )
     {
         f_logger_file = NULL;
         LOGPRINT_LOG_I("Terminated: file");
-        status = LOGGER_STATUS_OK;
+        status = LOG_STATUS_OK;
     }
     
     return status;
 }
 
-LOGGER_STATUS logger_file_transmit ( char * msg, size_t msgLen )
+LOG_STATUS logger_file_transmit ( char * msg, size_t msgLen )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_FAILURE_INVALID_MESSAGE;
+    LOG_STATUS status = LOG_STATUS_FAILURE_INVALID_MESSAGE;
     
     LOGPRINT_ASSERT(f_logger_file!=NULL);
     LOGPRINT_ASSERT(msg!=NULL);
@@ -100,16 +103,17 @@ LOGGER_STATUS logger_file_transmit ( char * msg, size_t msgLen )
     pthread_mutex_lock( &f_mutex_print );
     
     int charsPrinted = fprintf(f_logger_file, "%s\n",msg);
+	fflush(f_logger_file);
     
     pthread_mutex_unlock( &f_mutex_print );
 
     if ( charsPrinted >= msgLen )
     {
-        status = LOGGER_STATUS_OK;
+        status = LOG_STATUS_OK;
     }
     else
     {
-        LOGPRINT_LOG_E("Failed to write whole message. Only %d/%d printed",charsPrinted,msgLen);
+        LOGPRINT_LOG_E("Failed to write whole message. Only %d/%zd printed",charsPrinted,msgLen);
     }
 
     return status;

@@ -9,8 +9,8 @@
  */
 
 
-#ifndef _LOGGER_INI_H
-#define _LOGGER_INI_H
+#ifndef _LOG_INI_H
+#define _LOG_INI_H
 
 
 #ifdef __cplusplus
@@ -23,31 +23,31 @@ extern "C" {
 
 
 /**
- @enum _LOGGER_INI_STATUS
+ @enum _LOG_INI_STATUS
  @brief Various logger levels that can be enabled. \n
  All values are or'ed (bitwise) such that all, or none can be enabled
  \n\n
- #LOGGER_INI_STATUS_UNDEF Unused status code \n
- #LOGGER_INI_STATUS_SUCCESS Operation successfull\n
- #LOGGER_INI_STATUS_INVALID_PARAMS Operation failed due to parameters given are invalid\n
- #LOGGER_INI_STATUS_KEY_NOT_FOUND Could not find key in section\n
- #LOGGER_INI_STATUS_INTERNAL_ERROR Operation failed due to an unknown internal error\n
- #LOGGER_INI_STATUS_LAST_VALUE Unused status code\n
+ #LOG_INI_STATUS_UNDEF Unused status code \n
+ #LOG_INI_STATUS_SUCCESS Operation successfull\n
+ #LOG_INI_STATUS_INVALID_PARAMS Operation failed due to parameters given are invalid\n
+ #LOG_INI_STATUS_KEY_NOT_FOUND Could not find key in section\n
+ #LOG_INI_STATUS_INTERNAL_ERROR Operation failed due to an unknown internal error\n
+ #LOG_INI_STATUS_LAST_VALUE Unused status code\n
  */
-typedef enum _LOGGER_INI_STATUS
+typedef enum _LOG_INI_STATUS
 {
-    LOGGER_INI_STATUS_UNDEF = 0,
-    LOGGER_INI_STATUS_SUCCESS,
-    LOGGER_INI_STATUS_INVALID_PARAMS,
-    LOGGER_INI_STATUS_KEY_NOT_FOUND,
-    LOGGER_INI_STATUS_INTERNAL_ERROR,
-    LOGGER_INI_STATUS_LAST_VALUE,
-} LOGGER_INI_STATUS;
+    LOG_INI_STATUS_UNDEF = 0,
+    LOG_INI_STATUS_SUCCESS,
+    LOG_INI_STATUS_INVALID_PARAMS,
+    LOG_INI_STATUS_KEY_NOT_FOUND,
+    LOG_INI_STATUS_INTERNAL_ERROR,
+    LOG_INI_STATUS_LAST_VALUE,
+} LOG_INI_STATUS;
 
 
     
 /** handle pointer used to access key-values from section */
-typedef void* LOGGER_INI_SECTIONHANDLE;
+typedef void* LOG_INI_SECTIONHANDLE;
 
 
 /**
@@ -86,9 +86,9 @@ uint32_t logger_ini_numberOfSections ( void );
  @param[in] sectionIndex index of sectionHandle to get (index starts at zero)
  @param[out] sectionName name of section returned (optional)
  @param[out] sectionLen length of section name returned (optional)
- @return #LOGGER_INI_STATUS_SUCCESS on success
+ @return #LOG_INI_STATUS_SUCCESS on success
  */
-LOGGER_INI_STATUS logger_ini_sectionHandleByIndex ( LOGGER_INI_SECTIONHANDLE *handle, uint32_t sectionIndex, char **sectionName, size_t *sectionLen );
+LOG_INI_STATUS logger_ini_sectionHandleByIndex ( LOG_INI_SECTIONHANDLE *handle, uint32_t sectionIndex, char **sectionName, size_t *sectionLen );
     
     
 /**
@@ -96,18 +96,18 @@ LOGGER_INI_STATUS logger_ini_sectionHandleByIndex ( LOGGER_INI_SECTIONHANDLE *ha
  @param[out] handle section handle to be used to retrieve key-values
  @param[in] sectionName name of section to retrieve
  @param[in] sectionNameLen length of name of section to retrieve
- @return #LOGGER_INI_STATUS_SUCCESS on success
+ @return #LOG_INI_STATUS_SUCCESS on success
  */
-LOGGER_INI_STATUS logger_ini_sectionHandleByName ( LOGGER_INI_SECTIONHANDLE *handle, const char *sectionName, size_t sectionNameLen );
+LOG_INI_STATUS logger_ini_sectionHandleByName ( LOG_INI_SECTIONHANDLE *handle, const char *sectionName, size_t sectionNameLen );
     
     
 /**
  @brief Get the number of key-value pairs for this section
  @param[in] handle handle of section to use
  @param[out] kvpairCount returns the value of key-value pairs (only valid if return code success)
- @return #LOGGER_INI_STATUS_SUCCESS on success
+ @return #LOG_INI_STATUS_SUCCESS on success
  */
-LOGGER_INI_STATUS logger_ini_sectionNumberOfKeyValuePairs ( LOGGER_INI_SECTIONHANDLE handle, uint32_t *kvpairCount );
+LOG_INI_STATUS logger_ini_sectionNumberOfKeyValuePairs ( LOG_INI_SECTIONHANDLE handle, uint32_t *kvpairCount );
     
     
 /**
@@ -118,9 +118,9 @@ LOGGER_INI_STATUS logger_ini_sectionNumberOfKeyValuePairs ( LOGGER_INI_SECTIONHA
  @param[out] keyLen returned key name length
  @param[out] valueName returned value name
  @param[out] valueLen returned value name length
- @return #LOGGER_INI_STATUS_SUCCESS on success
+ @return #LOG_INI_STATUS_SUCCESS on success
  */
-LOGGER_INI_STATUS logger_ini_sectionRetrieveKeyValueAtIndex ( LOGGER_INI_SECTIONHANDLE handle, uint32_t sectionIdx, char **keyName, size_t *keyLen, char **valueName, size_t *valueLen );
+LOG_INI_STATUS logger_ini_sectionRetrieveKeyValueAtIndex ( LOG_INI_SECTIONHANDLE handle, uint32_t sectionIdx, char **keyName, size_t *keyLen, char **valueName, size_t *valueLen );
     
     
 /**
@@ -130,9 +130,9 @@ LOGGER_INI_STATUS logger_ini_sectionRetrieveKeyValueAtIndex ( LOGGER_INI_SECTION
  @param[in] keyLen key name length
  @param[out] valueName returned value name
  @param[out] valueLen returned value name length
- @return #LOGGER_INI_STATUS_SUCCESS on success, #LOGGER_INI_STATUS_KEY_NOT_FOUND if keyName not found
+ @return #LOG_INI_STATUS_SUCCESS on success, #LOG_INI_STATUS_KEY_NOT_FOUND if keyName not found
  */
-LOGGER_INI_STATUS logger_ini_sectionRetrieveValueFromKey ( LOGGER_INI_SECTIONHANDLE handle, char *keyName, size_t keyLen, char **valueName, size_t *valueLen );
+LOG_INI_STATUS logger_ini_sectionRetrieveValueFromKey ( LOG_INI_SECTIONHANDLE handle, char *keyName, size_t keyLen, char **valueName, size_t *valueLen );
 
 
     
@@ -141,4 +141,4 @@ LOGGER_INI_STATUS logger_ini_sectionRetrieveValueFromKey ( LOGGER_INI_SECTIONHAN
 #endif
 
 
-#endif /* _LOGGER_INI_H */
+#endif /* _LOG_INI_H */

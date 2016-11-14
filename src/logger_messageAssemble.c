@@ -16,55 +16,55 @@
 #include "logger_messageAssemble.h"
 
 
-#define LOGGER_LOG_ENTRY_FORMAT ("%s%c%s%c%s%c%s%c%s%c%s")
+#define LOG_LOG_ENTRY_FORMAT ("%s%c%s%c%s%c%s%c%s%c%s")
 
 
 void logger_assemble_string ( char * string, size_t string_size, char * timestamp, char * filename, char * linenumber, char * functionname, char * severity, char * message )
 {
-    snprintf( (char*)(string), (string_size), LOGGER_LOG_ENTRY_FORMAT, \
-             (char*)(timestamp), LOGGER_SEPERATOR_CHAR, \
-             (char*)(filename), LOGGER_SEPERATOR_CHAR, \
-             (char*)(linenumber), LOGGER_SEPERATOR_CHAR, \
-             (char*)(functionname), LOGGER_SEPERATOR_CHAR, \
-             (char*)(severity), LOGGER_SEPERATOR_CHAR, \
+    snprintf( (char*)(string), (string_size), LOG_LOG_ENTRY_FORMAT, \
+             (char*)(timestamp), LOG_SEPERATOR_CHAR, \
+             (char*)(filename), LOG_SEPERATOR_CHAR, \
+             (char*)(linenumber), LOG_SEPERATOR_CHAR, \
+             (char*)(functionname), LOG_SEPERATOR_CHAR, \
+             (char*)(severity), LOG_SEPERATOR_CHAR, \
              (char*)(message) );
 }
 
-void loggerLevelStringFromLevel ( LOGGER_LEVEL level, char * stringSeverity, uint8_t stringSize )
+void loggerLevelStringFromLevel ( LOG_LEVEL level, char * stringSeverity, uint8_t stringSize )
 {
     char * levelStr = NULL;
     
     switch ( level )
     {
-        case LOGGER_LEVEL_ENTRY:
+        case LOG_LEVEL_ENTRY:
             levelStr = "-->";
             break;
             
-        case LOGGER_LEVEL_EXIT:
+        case LOG_LEVEL_EXIT:
             levelStr = "<--";
             break;
             
-        case LOGGER_LEVEL_INFO:
+        case LOG_LEVEL_INFO:
             levelStr = "INFO";
             break;
             
-        case LOGGER_LEVEL_WARN:
+        case LOG_LEVEL_WARN:
             levelStr = "WARN";
             break;
             
-        case LOGGER_LEVEL_ERROR:
+        case LOG_LEVEL_ERROR:
             levelStr = "ERROR";
             break;
             
-        case LOGGER_LEVEL_FATAL:
+        case LOG_LEVEL_FATAL:
             levelStr = "FATAL";
             break;
             
-        case LOGGER_LEVEL_ASSERT:
+        case LOG_LEVEL_ASSERT:
             levelStr = "ASSRT";
             break;
             
-        case LOGGER_LEVEL_EVENT:
+        case LOG_LEVEL_EVENT:
             levelStr = "EVENT";
             break;
             

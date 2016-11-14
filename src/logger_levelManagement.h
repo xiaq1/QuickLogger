@@ -9,8 +9,8 @@
  */
 
 
-#ifndef _LOGGER_LEVELMANAGEMENT_H
-#define _LOGGER_LEVELMANAGEMENT_H
+#ifndef _LOG_LEVELMANAGEMENT_H
+#define _LOG_LEVELMANAGEMENT_H
 
 
 #ifdef __cplusplus
@@ -23,53 +23,53 @@ extern "C" {
 
 
 /**
- @brief from a given character get the associated LOGGER_LEVEL
+ @brief from a given character get the associated LOG_LEVEL
  @details conversions types below \n
- '>' <-> LOGGER_LEVEL_ENTRY \n
- '<' <-> LOGGER_LEVEL_EXIT \n
- 'i'/'I' <-> LOGGER_LEVEL_INFO \n
- 'w'/'W' <-> LOGGER_LEVEL_WARN \n
- 'e'/'E' <-> LOGGER_LEVEL_ERROR
- 'f'/'F' <-> LOGGER_LEVEL_FATAL
- 'a'/'A' <-> LOGGER_LEVEL_ASSERT \n
- 'v'/'V' <-> LOGGER_LEVEL_EVENT \n
- @return returns not #LOGGER_LEVEL_NONE on success
+ '>' <-> LOG_LEVEL_ENTRY \n
+ '<' <-> LOG_LEVEL_EXIT \n
+ 'i'/'I' <-> LOG_LEVEL_INFO \n
+ 'w'/'W' <-> LOG_LEVEL_WARN \n
+ 'e'/'E' <-> LOG_LEVEL_ERROR
+ 'f'/'F' <-> LOG_LEVEL_FATAL
+ 'a'/'A' <-> LOG_LEVEL_ASSERT \n
+ 'v'/'V' <-> LOG_LEVEL_EVENT \n
+ @return returns not #LOG_LEVEL_NONE on success
  */
-LOGGER_LEVEL loggerFlags_level_charToLevel ( char loggerChar );
+LOG_LEVEL loggerFlags_level_charToLevel ( char loggerChar );
 
 
 /**
- @brief from a given string convert into #LOGGER_LEVEL_FLAGS
+ @brief from a given string convert into #LOG_LEVEL_FLAGS
  @param[in] loggerLevel NULL terminated string of logger level chars
  @param[in] loggerLevelLen Number of characters in above char array to examine
  @return returns all flags from string
  */
-LOGGER_LEVEL_FLAGS loggerFlags_level_stringToFlags ( char * loggerLevel, size_t loggerLevelLen );
+LOG_LEVEL_FLAGS loggerFlags_level_stringToFlags ( char * loggerLevel, size_t loggerLevelLen );
 
 
 /**
- @brief add #LOGGER_LEVEL to handlePrv
+ @brief add #LOG_LEVEL to handlePrv
  @param[in] handlePrv handle to logger to be changed
  @param[in] loggerLevel level to be added
  */
-void logger_level_add ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLevel );
+void logger_level_add ( LOG_HANDLE_PRV * handlePrv, LOG_LEVEL loggerLevel );
 
 
 /**
- @brief remove #LOGGER_LEVEL to handlePrv
+ @brief remove #LOG_LEVEL to handlePrv
  @param[in] handlePrv handle to logger to be changed
  @param[in] loggerLevel level to be removed
  */
-void logger_level_remove ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLevel );
+void logger_level_remove ( LOG_HANDLE_PRV * handlePrv, LOG_LEVEL loggerLevel );
 
 
 /**
- @brief test if #LOGGER_LEVEL is enabled in handlePrv
+ @brief test if #LOG_LEVEL is enabled in handlePrv
  @param[in] handlePrv handle to logger to be tested
  @param[in] loggerLevel level to test for
  @return #true on success
  */
-bool logger_level_isEnabled ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLevel );
+bool logger_level_isEnabled ( LOG_HANDLE_PRV * handlePrv, LOG_LEVEL loggerLevel );
 
     
 #ifdef __cplusplus

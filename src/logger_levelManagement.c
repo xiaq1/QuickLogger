@@ -11,56 +11,56 @@
 
 #include "logger_levelManagement.h"
 
-static LOGGER_LEVEL_FLAGS logger_level_flags ( LOGGER_LEVEL loggerLevel );
+static LOG_LEVEL_FLAGS logger_level_flags ( LOG_LEVEL loggerLevel );
 
 
-LOGGER_LEVEL loggerFlags_level_charToLevel ( char loggerChar )
+LOG_LEVEL loggerFlags_level_charToLevel ( char loggerChar )
 {
-    LOGGER_LEVEL loggerLevel = LOGGER_LEVEL_NONE;
+    LOG_LEVEL loggerLevel = LOG_LEVEL_NONE;
     
     switch ( loggerChar )
     {
         case '>' :
-            loggerLevel = LOGGER_LEVEL_ENTRY;
+            loggerLevel = LOG_LEVEL_ENTRY;
             break;
             
         case '<' :
-            loggerLevel = LOGGER_LEVEL_EXIT;
+            loggerLevel = LOG_LEVEL_EXIT;
             break;
             
         case 't' :
         case 'T' :
-            loggerLevel = LOGGER_LEVEL_TRACE;
+            loggerLevel = LOG_LEVEL_TRACE;
             break;
             
         case 'i' :
         case 'I' :
-            loggerLevel = LOGGER_LEVEL_INFO;
+            loggerLevel = LOG_LEVEL_INFO;
             break;
             
         case 'w' :
         case 'W' :
-            loggerLevel = LOGGER_LEVEL_WARN;
+            loggerLevel = LOG_LEVEL_WARN;
             break;
             
         case 'e' :
         case 'E' :
-            loggerLevel = LOGGER_LEVEL_ERROR;
+            loggerLevel = LOG_LEVEL_ERROR;
             break;
             
         case 'f' :
         case 'F' :
-            loggerLevel = LOGGER_LEVEL_FATAL;
+            loggerLevel = LOG_LEVEL_FATAL;
             break;
             
         case 'a' :
         case 'A' :
-            loggerLevel = LOGGER_LEVEL_ASSERT;
+            loggerLevel = LOG_LEVEL_ASSERT;
             break;
             
         case 'v' :
         case 'V' :
-            loggerLevel = LOGGER_LEVEL_EVENT;
+            loggerLevel = LOG_LEVEL_EVENT;
             break;
             
         default :
@@ -71,9 +71,9 @@ LOGGER_LEVEL loggerFlags_level_charToLevel ( char loggerChar )
     return loggerLevel;
 }
 
-LOGGER_LEVEL_FLAGS loggerFlags_level_stringToFlags ( char * loggerLevel, size_t loggerLevelLen )
+LOG_LEVEL_FLAGS loggerFlags_level_stringToFlags ( char * loggerLevel, size_t loggerLevelLen )
 {
-    LOGGER_LEVEL_FLAGS flags = 0U;
+    LOG_LEVEL_FLAGS flags = 0U;
     
     if ( loggerLevel )
     {
@@ -81,7 +81,7 @@ LOGGER_LEVEL_FLAGS loggerFlags_level_stringToFlags ( char * loggerLevel, size_t 
         {
             if ( loggerLevel[i] != '\0' )
             {
-                flags |= (LOGGER_LEVEL_FLAGS)loggerFlags_level_charToLevel(loggerLevel[i]);
+                flags |= (LOG_LEVEL_FLAGS)loggerFlags_level_charToLevel(loggerLevel[i]);
             }
             else
             {
@@ -94,12 +94,12 @@ LOGGER_LEVEL_FLAGS loggerFlags_level_stringToFlags ( char * loggerLevel, size_t 
 }
 
 /* convert enum to flag bit form */
-static LOGGER_LEVEL_FLAGS logger_level_flags ( LOGGER_LEVEL loggerLevel )
+static LOG_LEVEL_FLAGS logger_level_flags ( LOG_LEVEL loggerLevel )
 {
-    return (LOGGER_LEVEL_FLAGS)loggerLevel;
+    return (LOG_LEVEL_FLAGS)loggerLevel;
 }
 
-void logger_level_add ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLevel )
+void logger_level_add ( LOG_HANDLE_PRV * handlePrv, LOG_LEVEL loggerLevel )
 {
     if ( handlePrv )
     {
@@ -107,7 +107,7 @@ void logger_level_add ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLevel 
     }
 }
 
-void logger_level_remove ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLevel )
+void logger_level_remove ( LOG_HANDLE_PRV * handlePrv, LOG_LEVEL loggerLevel )
 {
     if ( handlePrv )
     {
@@ -115,7 +115,7 @@ void logger_level_remove ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLev
     }
 }
 
-bool logger_level_isEnabled ( LOGGER_HANDLE_PRV * handlePrv, LOGGER_LEVEL loggerLevel )
+bool logger_level_isEnabled ( LOG_HANDLE_PRV * handlePrv, LOG_LEVEL loggerLevel )
 {
     bool loggerEnabled = false;
     

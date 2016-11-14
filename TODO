@@ -1,0 +1,13 @@
+TODO List for Logger
+
+1. simpilify the usage of loggerLoadIniFile() to make it more ease to
+   use the console as terminal:
+
+   Currently we can use example/example_ini.ini  as the first argument of  loggerLoadIniFil()
+
+2. Debug the issue that application may core if 'file' rather than 'console'
+   is used as the output
+
+3. Support the requirement to support DIY level to enable debug specific component.
+
+4. update changelevel.sh to make it much easier to be used.

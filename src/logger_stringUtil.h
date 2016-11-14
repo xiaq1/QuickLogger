@@ -9,8 +9,8 @@
 */
 
 
-#ifndef _LOGGER_STRINGUTIL_H
-#define _LOGGER_STRINGUTIL_H
+#ifndef _LOG_STRINGUTIL_H
+#define _LOG_STRINGUTIL_H
 
 
 #ifdef __cplusplus
@@ -73,4 +73,4 @@ uint32_t logger_string_numberOfOccurencesOfChar ( const char* str, size_t strLen
 #endif
 
 
-#endif /* _LOGGER_STRINGUTIL_H */
+#endif /* _LOG_STRINGUTIL_H */

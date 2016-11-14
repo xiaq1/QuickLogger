@@ -7,8 +7,8 @@
  * Undocumented use this material shall be an infringement of copyright. *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
  
-#ifndef _TEST_LOGGER_OUTPUT
-#define _TEST_LOGGER_OUTPUT
+#ifndef _TEST_LOG_OUTPUT
+#define _TEST_LOG_OUTPUT
 
 
 #ifdef __cplusplus
@@ -27,4 +27,4 @@ bool test_logger ( void );
 #endif
 
 
-#endif /* _TEST_LOGGER_OUTPUT */
+#endif /* _TEST_LOG_OUTPUT */

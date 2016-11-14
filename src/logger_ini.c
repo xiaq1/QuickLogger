@@ -357,6 +357,10 @@ bool logger_ini_initFromFile ( const char * filePath, size_t filePathLen )
     if ( filePath )
     {
         FILE *filePointer = fopen(filePath, "r");
+
+		if (NULL == filePointer) {
+			return didInit;
+		}
         
         fseek(filePointer , 0 , SEEK_END);
         size_t fileBufferSize = ftell(filePointer);
@@ -401,9 +405,9 @@ uint32_t logger_ini_numberOfSections ( void )
 }
 
 
-LOGGER_INI_STATUS logger_ini_sectionHandleByIndex ( LOGGER_INI_SECTIONHANDLE *handle, uint32_t sectionIndex, char **sectionName, size_t *sectionLen )
+LOG_INI_STATUS logger_ini_sectionHandleByIndex ( LOG_INI_SECTIONHANDLE *handle, uint32_t sectionIndex, char **sectionName, size_t *sectionLen )
 {
-    LOGGER_INI_STATUS status = LOGGER_INI_STATUS_UNDEF;
+    LOG_INI_STATUS status = LOG_INI_STATUS_UNDEF;
     
     if ( ( handle != NULL ) && ( sectionIndex < f_sectionsArrayCount ) )
     {
@@ -423,16 +427,16 @@ LOGGER_INI_STATUS logger_ini_sectionHandleByIndex ( LOGGER_INI_SECTIONHANDLE *ha
     }
     else
     {
-        status = LOGGER_INI_STATUS_INVALID_PARAMS;
+        status = LOG_INI_STATUS_INVALID_PARAMS;
     }
     
     return status;
 }
 
 
-LOGGER_INI_STATUS logger_ini_sectionHandleByName ( LOGGER_INI_SECTIONHANDLE *handle, const char *sectionName, size_t sectionNameLen )
+LOG_INI_STATUS logger_ini_sectionHandleByName ( LOG_INI_SECTIONHANDLE *handle, const char *sectionName, size_t sectionNameLen )
 {
-    LOGGER_INI_STATUS status = LOGGER_INI_STATUS_UNDEF;
+    LOG_INI_STATUS status = LOG_INI_STATUS_UNDEF;
     
     if ( ( handle != NULL ) && ( sectionName != NULL ) )
     {
@@ -447,7 +451,7 @@ LOGGER_INI_STATUS logger_ini_sectionHandleByName ( LOGGER_INI_SECTIONHANDLE *han
                 {
                     *handle = section;
                     
-                    status = LOGGER_INI_STATUS_SUCCESS;
+                    status = LOG_INI_STATUS_SUCCESS;
                     break;
                 }
             }
@@ -455,15 +459,15 @@ LOGGER_INI_STATUS logger_ini_sectionHandleByName ( LOGGER_INI_SECTIONHANDLE *han
     }
     else
     {
-        status = LOGGER_INI_STATUS_INVALID_PARAMS;
+        status = LOG_INI_STATUS_INVALID_PARAMS;
     }
     
     return status;
 }
 
-LOGGER_INI_STATUS logger_ini_sectionNumberOfKeyValuePairs ( LOGGER_INI_SECTIONHANDLE handle, uint32_t *kvpairCount )
+LOG_INI_STATUS logger_ini_sectionNumberOfKeyValuePairs ( LOG_INI_SECTIONHANDLE handle, uint32_t *kvpairCount )
 {
-    LOGGER_INI_STATUS status = LOGGER_INI_STATUS_UNDEF;
+    LOG_INI_STATUS status = LOG_INI_STATUS_UNDEF;
     
     if ( ( handle != NULL ) &&  ( kvpairCount != NULL ) )
     {
@@ -474,15 +478,15 @@ LOGGER_INI_STATUS logger_ini_sectionNumberOfKeyValuePairs ( LOGGER_INI_SECTIONHA
     }
     else
     {
-        status = LOGGER_INI_STATUS_INVALID_PARAMS;
+        status = LOG_INI_STATUS_INVALID_PARAMS;
     }
     
     return status;
 }
 
-LOGGER_INI_STATUS logger_ini_sectionRetrieveKeyValueAtIndex ( LOGGER_INI_SECTIONHANDLE handle, uint32_t sectionIdx, char **keyName, size_t *keyLen, char **valueName, size_t *valueLen )
+LOG_INI_STATUS logger_ini_sectionRetrieveKeyValueAtIndex ( LOG_INI_SECTIONHANDLE handle, uint32_t sectionIdx, char **keyName, size_t *keyLen, char **valueName, size_t *valueLen )
 {
-    LOGGER_INI_STATUS status = LOGGER_INI_STATUS_UNDEF;
+    LOG_INI_STATUS status = LOG_INI_STATUS_UNDEF;
     
     if ( ( handle != NULL ) && ( keyName != NULL ) && ( keyLen != NULL ) && ( valueName != NULL ) && ( valueLen != NULL) )
     {
@@ -510,25 +514,25 @@ LOGGER_INI_STATUS logger_ini_sectionRetrieveKeyValueAtIndex ( LOGGER_INI_SECTION
             *valueName = v;
             *valueLen = vLen;
             
-            status = LOGGER_INI_STATUS_SUCCESS;
+            status = LOG_INI_STATUS_SUCCESS;
         }
         else
         {
-            status = LOGGER_INI_STATUS_INVALID_PARAMS;
+            status = LOG_INI_STATUS_INVALID_PARAMS;
         }
     }
     else
     {
-        status = LOGGER_INI_STATUS_INVALID_PARAMS;
+        status = LOG_INI_STATUS_INVALID_PARAMS;
     }
     
     return status;
 }
 
 
-LOGGER_INI_STATUS logger_ini_sectionRetrieveValueFromKey ( LOGGER_INI_SECTIONHANDLE handle, char *keyName, size_t keyLen, char **valueName, size_t *valueLen )
+LOG_INI_STATUS logger_ini_sectionRetrieveValueFromKey ( LOG_INI_SECTIONHANDLE handle, char *keyName, size_t keyLen, char **valueName, size_t *valueLen )
 {
-    LOGGER_INI_STATUS status = LOGGER_INI_STATUS_UNDEF;
+    LOG_INI_STATUS status = LOG_INI_STATUS_UNDEF;
     
     if ( ( handle != NULL ) && ( keyName != NULL ) && ( valueName != NULL ) && ( valueLen != NULL) )
     {
@@ -552,7 +556,7 @@ LOGGER_INI_STATUS logger_ini_sectionRetrieveValueFromKey ( LOGGER_INI_SECTIONHAN
                     *valueName = tmpvalue;
                     *valueLen = tmpvalueLen;
                     
-                    status = LOGGER_INI_STATUS_SUCCESS;
+                    status = LOG_INI_STATUS_SUCCESS;
                     break;
                 }
             }
@@ -560,7 +564,7 @@ LOGGER_INI_STATUS logger_ini_sectionRetrieveValueFromKey ( LOGGER_INI_SECTIONHAN
     }
     else
     {
-        status = LOGGER_INI_STATUS_INVALID_PARAMS;
+        status = LOG_INI_STATUS_INVALID_PARAMS;
     }
 
     return status;

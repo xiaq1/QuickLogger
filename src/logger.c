@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <pthread.h>
+#include <assert.h>
 
 #include "logger.h"
 #include "logger_common.h"
@@ -26,41 +27,41 @@
 #include "logger_ini.h"
 
 
-static LOGGER_LEVEL f_defaultLevel = LOGGER_LEVEL_WARN | LOGGER_LEVEL_ERROR | LOGGER_LEVEL_FATAL | LOGGER_LEVEL_EVENT;
+static LOG_LEVEL f_defaultLevel = LOG_LEVEL_INFO | LOG_LEVEL_WARN | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL | LOG_LEVEL_EVENT;
+//static LOG_LEVEL f_defaultLevel = LOG_LEVEL_WARN | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL | LOG_LEVEL_EVENT;
+static LOG_OUTPUT_HANDLE * default_handle = NULL;
 
+static int logger_printLog ( char * msg, int msgSize, char * fileName, int lineNumber, char * functionName, LOG_LEVEL severity );
 
-static int logger_printLog ( char * msg, int msgSize, char * fileName, int lineNumber, char * functionName, LOGGER_LEVEL severity );
-
-
-static int logger_printLog ( char * msg, int msgSize, char * fileName, int lineNumber, char * functionName, LOGGER_LEVEL severity )
+static int logger_printLog ( char * msg, int msgSize, char * fileName, int lineNumber, char * functionName, LOG_LEVEL severity )
 {
     /* plus two for the ' ' in snprintf below */
-    size_t strSize = LOGGER_MAX_LOGGER_CHARS;
-    char completeMessage[LOGGER_MAX_LOGGER_CHARS];
+    size_t strSize = LOG_MAX_LOG_CHARS;
+    char completeMessage[LOG_MAX_LOG_CHARS];
     
-    for ( size_t i=0U; i<LOGGER_MAX_LOGGER_CHARS; i++ )
+    for ( size_t i=0U; i<LOG_MAX_LOG_CHARS; i++ )
     {
         completeMessage[i] = '\0';
     }
     
-    char strTimeStamp     [LOGGER_TIMESTAMP_SIZE];
-    char strFileName      [LOGGER_FILENAME_SIZE];
-    char strLineNumber    [LOGGER_LINENUMBER_SIZE];
-    char strFunctionName  [LOGGER_FUNCTIONNAME_SIZE];
-    char strSeverity      [LOGGER_SEVERITY_SIZE];
+    char strTimeStamp     [LOG_TIMESTAMP_SIZE];
+    char strFileName      [LOG_FILENAME_SIZE];
+    char strLineNumber    [LOG_LINENUMBER_SIZE];
+    char strFunctionName  [LOG_FUNCTIONNAME_SIZE];
+    char strSeverity      [LOG_SEVERITY_SIZE];
     
     char *strFileNamePtr = (char*)&strFileName;
     
-    loggerGetTimeString( (char*)&strTimeStamp,    LOGGER_TIMESTAMP_SIZE );
+    loggerGetTimeString( (char*)&strTimeStamp,    LOG_TIMESTAMP_SIZE );
     logger_string_fileNameFromPath( &strFileNamePtr, NULL, fileName, (uint32_t)strlen(fileName));
-    snprintf( (char*)&strLineNumber,      LOGGER_LINENUMBER_SIZE,     "%d",lineNumber);
-    snprintf( (char*)&strFunctionName,    LOGGER_FUNCTIONNAME_SIZE,   "%s",functionName);
-    loggerLevelStringFromLevel ( severity, (char*)&strSeverity, LOGGER_SEVERITY_SIZE );
+    snprintf( (char*)&strLineNumber,      LOG_LINENUMBER_SIZE,     "%d",lineNumber);
+    snprintf( (char*)&strFunctionName,    LOG_FUNCTIONNAME_SIZE,   "%s",functionName);
+    loggerLevelStringFromLevel ( severity, (char*)&strSeverity, LOG_SEVERITY_SIZE );
     
-    logger_assemble_string(completeMessage,LOGGER_MAX_LOGGER_CHARS,(char*)strTimeStamp,(char*)strFileName,(char*)strLineNumber,(char*)strFunctionName,(char*)strSeverity,msg);
+    logger_assemble_string(completeMessage,LOG_MAX_LOG_CHARS,(char*)strTimeStamp,(char*)strFileName,(char*)strLineNumber,(char*)strFunctionName,(char*)strSeverity,msg);
     
     /* remove any pre-terminated null chars */
-    for ( uint32_t i=0U; i<LOGGER_MAX_LOGGER_CHARS-1; i++ )
+    for ( uint32_t i=0U; i<LOG_MAX_LOG_CHARS-1; i++ )
     {
         if ( completeMessage[i] == '\0' )
         {
@@ -69,7 +70,7 @@ static int logger_printLog ( char * msg, int msgSize, char * fileName, int lineN
     }
     
     /* now work backwards and insert the NULL termination correctly */
-    for ( size_t i=LOGGER_MAX_LOGGER_CHARS-2; i>0U; i-- )
+    for ( size_t i=LOG_MAX_LOG_CHARS-2; i>0U; i-- )
     {
         char c = completeMessage[i];
         
@@ -82,19 +83,19 @@ static int logger_printLog ( char * msg, int msgSize, char * fileName, int lineN
 
     completeMessage[strSize] = '\0';
     
-    LOGGER_TEMPLATE_SEND handler = logger_getPrintHandler();
+    LOG_TEMPLATE_SEND handler = logger_getPrintHandler();
     
     int status = (*handler)((char*)completeMessage,strSize);
     
-    LOGPRINT_ASSERT(status==LOGGER_STATUS_OK);
+    LOGPRINT_ASSERT(status==LOG_STATUS_OK);
     
     return status;
 }
 
-#ifdef LOGGER_ENABLE_TRACE
-bool loggerInit_trace ( LOGGER_OUTPUT_HANDLE * handle , LOGGER_LEVEL loggerLevel, const char * fileName, int lineNumber )
+#ifdef LOG_ENABLE_TRACE
+bool loggerInit_trace ( LOG_OUTPUT_HANDLE * handle , LOG_LEVEL loggerLevel, const char * fileName, int lineNumber )
 #else
-bool loggerInit ( LOGGER_OUTPUT_HANDLE * handle , LOGGER_LEVEL loggerLevel )
+bool loggerInit ( LOG_OUTPUT_HANDLE * handle , LOG_LEVEL loggerLevel )
 #endif
 {
     bool initSuccess = false;
@@ -112,7 +113,7 @@ bool loggerInit ( LOGGER_OUTPUT_HANDLE * handle , LOGGER_LEVEL loggerLevel )
     else
     {
         /* add new logger registration info */
-        LOGGER_HANDLE_PRV * handlePrv = logger_memAlloc ( sizeof( LOGGER_HANDLE_PRV ) );
+        LOG_HANDLE_PRV * handlePrv = logger_memAlloc ( sizeof( LOG_HANDLE_PRV ) );
         
         if ( handlePrv == NULL )
         {
@@ -128,13 +129,13 @@ bool loggerInit ( LOGGER_OUTPUT_HANDLE * handle , LOGGER_LEVEL loggerLevel )
 
             if ( initSuccess )
             {
-#ifdef LOGGER_ENABLE_TRACE
+#ifdef LOG_ENABLE_TRACE
                 LOGPRINT_LOG_I("Init: %s:%d",fileName,lineNumber);
 #endif
             }
             else
             {
-                *handle = LOGGER_OUTPUT_HANDLE_INVALID;
+                *handle = LOG_OUTPUT_HANDLE_INVALID;
                 logger_memFree(handlePrv);
             }
         }
@@ -143,10 +144,10 @@ bool loggerInit ( LOGGER_OUTPUT_HANDLE * handle , LOGGER_LEVEL loggerLevel )
     return initSuccess;
 }
 
-#ifdef LOGGER_ENABLE_TRACE
-bool loggerTerm_trace ( LOGGER_OUTPUT_HANDLE handle, const char * fileName, int lineNumber )
+#ifdef LOG_ENABLE_TRACE
+bool loggerTerm_trace ( LOG_OUTPUT_HANDLE handle, const char * fileName, int lineNumber )
 #else
-bool loggerTerm  ( LOGGER_OUTPUT_HANDLE handle )
+bool loggerTerm  ( LOG_OUTPUT_HANDLE handle )
 #endif
 {
     bool termSuccess = false;
@@ -157,7 +158,7 @@ bool loggerTerm  ( LOGGER_OUTPUT_HANDLE handle )
     }
     else
     {
-        LOGGER_HANDLE_PRV * handlePrv = (LOGGER_HANDLE_PRV *)handle;
+        LOG_HANDLE_PRV * handlePrv = (LOG_HANDLE_PRV *)handle;
         
         termSuccess = logger_term();
         
@@ -169,7 +170,7 @@ bool loggerTerm  ( LOGGER_OUTPUT_HANDLE handle )
 }
 
 
-bool loggerInitFromFileName ( LOGGER_OUTPUT_HANDLE * handle, const char * fileName, uint32_t fileNameLen )
+bool loggerInitFromFileName ( LOG_OUTPUT_HANDLE * handle, const char * fileName, uint32_t fileNameLen )
 {
     bool status = false;
 
@@ -181,7 +182,7 @@ bool loggerInitFromFileName ( LOGGER_OUTPUT_HANDLE * handle, const char * fileNa
 
     if ( logger_ini_isFileOpen() && ( baseName != NULL ) )
     {
-        LOGGER_INI_SECTIONHANDLE inihandle = NULL;
+        LOG_INI_SECTIONHANDLE inihandle = NULL;
         
         logger_ini_sectionHandleByName(&inihandle, "overrides", strlen("overrides"));
         
@@ -195,7 +196,7 @@ bool loggerInitFromFileName ( LOGGER_OUTPUT_HANDLE * handle, const char * fileNa
             
             if ( overrideString != NULL )
             {
-                LOGGER_LEVEL level = loggerFlags_level_stringToFlags(overrideString,overrideStringLen);
+                LOG_LEVEL level = loggerFlags_level_stringToFlags(overrideString,overrideStringLen);
                 status = loggerInit(handle, level);
             }
             else
@@ -220,7 +221,7 @@ bool loggerInitFromFileName ( LOGGER_OUTPUT_HANDLE * handle, const char * fileNa
     return status;
 }
 
-void loggerSetSeverityEnablements_Default ( LOGGER_LEVEL loggerLevel )
+void loggerSetSeverityEnablements_Default ( LOG_LEVEL loggerLevel )
 {
     f_defaultLevel = loggerLevel;
 }
@@ -230,7 +231,7 @@ bool loggerLoadIniFile ( char * filePath, size_t filePathLen )
     return logger_ini_initFromFile(filePath, filePathLen);
 }
 
-bool loggerAppendDebugLevel ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL addLevel )
+bool loggerAppendDebugLevel ( LOG_OUTPUT_HANDLE handle, LOG_LEVEL addLevel )
 {
     bool success = false;
 
@@ -240,7 +241,7 @@ bool loggerAppendDebugLevel ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL addLevel
     }
     else
     {
-        LOGGER_HANDLE_PRV * handlePrv = (LOGGER_HANDLE_PRV*)handle;
+        LOG_HANDLE_PRV * handlePrv = (LOG_HANDLE_PRV*)handle;
         
         logger_level_add(handlePrv,addLevel);
         
@@ -250,7 +251,7 @@ bool loggerAppendDebugLevel ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL addLevel
     return success;
 }
 
-bool loggerRemoveDebugLevel ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL rmLevel )
+bool loggerRemoveDebugLevel ( LOG_OUTPUT_HANDLE handle, LOG_LEVEL rmLevel )
 {
     bool success = false;
     
@@ -260,7 +261,7 @@ bool loggerRemoveDebugLevel ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL rmLevel 
     }
     else
     {
-        LOGGER_HANDLE_PRV * handlePrv = (LOGGER_HANDLE_PRV*)handle;
+        LOG_HANDLE_PRV * handlePrv = (LOG_HANDLE_PRV*)handle;
         
         logger_level_remove(handlePrv,rmLevel);
         
@@ -270,7 +271,7 @@ bool loggerRemoveDebugLevel ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL rmLevel 
     return success;
 }
 
-bool loggerIsDebugLevelEnabled ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL isLevel )
+bool loggerIsDebugLevelEnabled ( LOG_OUTPUT_HANDLE handle, LOG_LEVEL isLevel )
 {
     bool isEnabled = false;
 
@@ -280,7 +281,7 @@ bool loggerIsDebugLevelEnabled ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL isLev
         return isEnabled;
     }
     
-    LOGGER_HANDLE_PRV * handlePrv = (LOGGER_HANDLE_PRV*)handle;
+    LOG_HANDLE_PRV * handlePrv = (LOG_HANDLE_PRV*)handle;
     
     if ( logger_level_isEnabled(handlePrv, isLevel) )
     {
@@ -290,8 +291,8 @@ bool loggerIsDebugLevelEnabled ( LOGGER_OUTPUT_HANDLE handle, LOGGER_LEVEL isLev
     return isEnabled;
 }
 
-bool logPrint ( LOGGER_OUTPUT_HANDLE handle,
-                 LOGGER_LEVEL loggerLevel,
+bool logPrint ( LOG_OUTPUT_HANDLE handle,
+                 LOG_LEVEL loggerLevel,
                  const char * fileName,
                  const int lineNumber,
                  const char * functionName,
@@ -306,11 +307,11 @@ bool logPrint ( LOGGER_OUTPUT_HANDLE handle,
     
     bool wasDebugOutput = false;
     
-    LOGGER_HANDLE_PRV * handlePrv = (LOGGER_HANDLE_PRV*)handle;
+    LOG_HANDLE_PRV * handlePrv = (LOG_HANDLE_PRV*)handle;
     
     if ( logger_level_isEnabled(handlePrv, loggerLevel ) )
     {
-        int logSize = LOGGER_MESSAGE_SIZE;
+        int logSize = LOG_MESSAGE_SIZE;
         char * logDebug[logSize];
         
         if ( fmt == NULL )
@@ -330,7 +331,7 @@ bool logPrint ( LOGGER_OUTPUT_HANDLE handle,
 
         /* this is where the message is printed */
         if ( logger_printLog((char*)logDebug, logSize, (char*)fileName, lineNumber, (char*)functionName, loggerLevel)
-            == LOGGER_STATUS_OK )
+            == LOG_STATUS_OK )
         {
             wasDebugOutput = true;
         }
@@ -347,5 +348,47 @@ bool logPrint ( LOGGER_OUTPUT_HANDLE handle,
 
 uint32_t loggerVersion ( void )
 {
-    return LOGGER_VERSION;
+    return LOG_VERSION;
+}
+
+void logger_init_handle(LOG_OUTPUT_HANDLE * external_handle)
+{
+	default_handle = external_handle;
+}
+
+LOG_OUTPUT_HANDLE logger_get_handle(void)
+{
+	assert(NULL != default_handle);
+	return *default_handle;
+}
+
+LOG_OUTPUT_HANDLE * logger_get_handle_addr(void)
+{
+	return default_handle;
+}
+
+void lsd_printf(const char *format, ...)
+{
+	va_list ap, aq;
+
+	va_start(ap, format);
+	va_copy(aq, ap);
+	va_end(ap);
+
+	LOG_PRINT_INFO(logger_get_handle(), format, aq);
+}
+
+void lsd_fprintf(FILE *stream, const char *format, ...)
+{
+	va_list ap, aq;
+
+	va_start(ap, format);
+	va_copy(aq, ap);
+	va_end(ap);
+
+	if (stream == stderr) {
+		LOG_PRINT_ERROR(logger_get_handle(), format, aq);
+	} else {
+		fprintf(stream, format, aq);
+	}
 }

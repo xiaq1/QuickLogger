@@ -19,15 +19,15 @@
 
 
 static uint32_t f_registeredCount = 0U;
-#define LOGGER_REGISTEREDCOUNT_MAXVALUE (0xFFFFFFFFU)
+#define LOG_REGISTEREDCOUNT_MAXVALUE (0xFFFFFFFFU)
 
 static pthread_mutex_t f_mutex_initCount = PTHREAD_MUTEX_INITIALIZER;
 
-static LOGGER_STATUS logger_startup ( void );
+static LOG_STATUS logger_startup ( void );
 
-static LOGGER_STATUS logger_shutdown ( void );
+static LOG_STATUS logger_shutdown ( void );
 
-static LOGGER_TEMPLATE_INIT f_pluginInitArray[] =
+static LOG_TEMPLATE_INIT f_pluginInitArray[] =
 {
     logger_stdout_initialize,
     logger_file_initialize,
@@ -35,7 +35,7 @@ static LOGGER_TEMPLATE_INIT f_pluginInitArray[] =
 };
 
 
-static LOGGER_TEMPLATE_TERM f_pluginTermArray[] =
+static LOG_TEMPLATE_TERM f_pluginTermArray[] =
 {
     logger_stdout_terminate,
     logger_file_terminate,
@@ -43,7 +43,7 @@ static LOGGER_TEMPLATE_TERM f_pluginTermArray[] =
 };
 
 
-static LOGGER_TEMPLATE_SEND f_pluginSendArray[] =
+static LOG_TEMPLATE_SEND f_pluginSendArray[] =
 {
     logger_stdout_transmit,
     logger_file_transmit,
@@ -51,7 +51,7 @@ static LOGGER_TEMPLATE_SEND f_pluginSendArray[] =
 };
 
 
-static LOGGER_TEMPLATE_NAME f_pluginNameArray[] =
+static LOG_TEMPLATE_NAME f_pluginNameArray[] =
 {
     logger_stdout_name,
     logger_file_name,
@@ -63,13 +63,13 @@ static LOGGER_TEMPLATE_NAME f_pluginNameArray[] =
 static uint32_t f_pluginIndex = 0U; /* default */
 
 
-static LOGGER_STATUS logger_startup ( void )
+static LOG_STATUS logger_startup ( void )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_UNDEF;
+    LOG_STATUS status = LOG_STATUS_UNDEF;
 
     for ( uint32_t i=0U; i<logger_ini_numberOfSections(); i++ )
     {
-        LOGGER_INI_SECTIONHANDLE handle = NULL;
+        LOG_INI_SECTIONHANDLE handle = NULL;
         
         char *sectionname = NULL;
         size_t sectionlen = 0;
@@ -101,9 +101,9 @@ static LOGGER_STATUS logger_startup ( void )
     return status;
 }
 
-static LOGGER_STATUS logger_shutdown ( void )
+static LOG_STATUS logger_shutdown ( void )
 {
-    LOGGER_STATUS status = LOGGER_STATUS_UNDEF;
+    LOG_STATUS status = LOG_STATUS_UNDEF;
     
     LOGPRINT_ASSERT(f_pluginTermArray[f_pluginIndex]!=NULL);
 
@@ -116,7 +116,7 @@ bool logger_init ( void )
 {
     bool success = false;
     
-    if ( f_registeredCount == LOGGER_REGISTEREDCOUNT_MAXVALUE )
+    if ( f_registeredCount == LOG_REGISTEREDCOUNT_MAXVALUE )
     {
         LOGPRINT_LOG_E("Too many calls to %s, check your code!",__FUNCTION__);
     }
@@ -129,7 +129,7 @@ bool logger_init ( void )
         if ( f_registeredCount == 0U )
         {
             /* init output for first time */
-            if ( logger_startup() != LOGGER_STATUS_OK )
+            if ( logger_startup() != LOG_STATUS_OK )
             {
                 LOGPRINT_LOG_E("Failed to init startup");
             }
@@ -164,7 +164,7 @@ bool logger_term ( void )
         if ( f_registeredCount == 0U )
         {
             /* terminate output for last time - do this one time */
-            if ( logger_shutdown() == LOGGER_STATUS_OK )
+            if ( logger_shutdown() == LOG_STATUS_OK )
             {
                 success = true;
             }
@@ -179,7 +179,7 @@ char* logger_currentOutput ( void )
     return (*f_pluginNameArray[f_pluginIndex])();
 }
 
-LOGGER_TEMPLATE_SEND logger_getPrintHandler ( void )
+LOG_TEMPLATE_SEND logger_getPrintHandler ( void )
 {
     return f_pluginSendArray[f_pluginIndex];
 }

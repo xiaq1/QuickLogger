@@ -9,8 +9,8 @@
  */
 
 
-#ifndef _LOGGER_PLUGINSTDOUT_H
-#define _LOGGER_PLUGINSTDOUT_H
+#ifndef _LOG_PLUGINSTDOUT_H
+#define _LOG_PLUGINSTDOUT_H
 
 
 #ifdef __cplusplus
@@ -22,9 +22,9 @@ extern "C" {
 #include "logger_common.h"
 
 
-LOGGER_STATUS logger_stdout_initialize ( LOGGER_INI_SECTIONHANDLE paramBag );
-LOGGER_STATUS logger_stdout_terminate ( void );
-LOGGER_STATUS logger_stdout_transmit ( char * msg, size_t msgLen );
+LOG_STATUS logger_stdout_initialize ( LOG_INI_SECTIONHANDLE paramBag );
+LOG_STATUS logger_stdout_terminate ( void );
+LOG_STATUS logger_stdout_transmit ( char * msg, size_t msgLen );
 char* logger_stdout_name ( void );
     
     
@@ -33,4 +33,4 @@ char* logger_stdout_name ( void );
 #endif
 
 
-#endif /* _LOGGER_PLUGINSTDOUT_H */
+#endif /* _LOG_PLUGINSTDOUT_H */

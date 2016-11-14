@@ -9,8 +9,8 @@
  */
 
 
-#ifndef _LOGGER_PLUGINUDP_H
-#define _LOGGER_PLUGINUDP_H
+#ifndef _LOG_PLUGINUDP_H
+#define _LOG_PLUGINUDP_H
 
 
 #ifdef __cplusplus
@@ -23,9 +23,9 @@ extern "C" {
 #include "logger_ini.h"
 
 
-LOGGER_STATUS logger_udp_initialize ( LOGGER_INI_SECTIONHANDLE paramBag );
-LOGGER_STATUS logger_udp_terminate ( void );
-LOGGER_STATUS logger_udp_transmit ( char * msg, size_t msgLen );
+LOG_STATUS logger_udp_initialize ( LOG_INI_SECTIONHANDLE paramBag );
+LOG_STATUS logger_udp_terminate ( void );
+LOG_STATUS logger_udp_transmit ( char * msg, size_t msgLen );
 char * logger_udp_name ( void );
     
     
@@ -34,4 +34,4 @@ char * logger_udp_name ( void );
 #endif
 
 
-#endif /* _LOGGER_PLUGINUDP_H */
+#endif /* _LOG_PLUGINUDP_H */

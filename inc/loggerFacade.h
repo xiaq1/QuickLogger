@@ -9,8 +9,8 @@
  */
 
  
-#ifndef _LOGGERFACADE_H
-#define _LOGGERFACADE_H
+#ifndef _LOGFACADE_H
+#define _LOGFACADE_H
 
 
 #ifdef __cplusplus
@@ -19,39 +19,60 @@ extern "C" {
 
 
 /** comment line to disable logging */
-#define LOGGER_ENABLED
-    
 
+#define diy_fprintf(p, fmt, ...)	\
+	do {	\
+		char _tpm[1024] = {0,};	\
+		snprintf(_tpm, 1024, fmt, ##__VA_ARGS__);	\
+		fputs(_tpm, p);	\
+	} while(0)
 
-#ifdef LOGGER_ENABLED
+#define LOG_ENABLED
+
+#ifdef LOG_ENABLED
 
 
 #include <string.h>
 #include "logger.h"
 
 
-#define LOGGER_INIT   loggerInitFromFileName(&_loggerHandle, __FILE__, strlen(__FILE__))
-#define LOGGER_TERM      loggerTerm(_loggerHandle)
-#define LOGGER_ENABLE_TYPE(a)  loggerAppendDebugLevel(_loggerHandle, (a))
-#define LOGGER_DISABLE_TYPE(a) loggerRemoveDebugLevel(_loggerHandle, (a))
+#define LOG_INIT   loggerInitFromFileName(&_loggerHandle, __FILE__, strlen(__FILE__))
+#define LOG_TERM      loggerTerm(_loggerHandle)
+#define LOG_ENABLE_TYPE(a)  loggerAppendDebugLevel(_loggerHandle, (a))
+#define LOG_DISABLE_TYPE(a) loggerRemoveDebugLevel(_loggerHandle, (a))
 
-#define LOGGER_ENTRY LOGGER_PRINT_ENTRY(_loggerHandle, NULL)
-#define LOGGER_EXIT LOGGER_PRINT_EXIT(_loggerHandle, NULL)
-#define LOGGER_INFO(format, ... ) LOGGER_PRINT_INFO(_loggerHandle, format, ##__VA_ARGS__ )
-#define LOGGER_WARN(format, ... ) LOGGER_PRINT_WARN(_loggerHandle, format, ##__VA_ARGS__ )
-#define LOGGER_ERROR(format, ... ) LOGGER_PRINT_ERROR(_loggerHandle, format, ##__VA_ARGS__ )
-#define LOGGER_FATAL(format, ... ) LOGGER_PRINT_FATAL(_loggerHandle, format, ##__VA_ARGS__ )
-#define LOGGER_ASSERT(format, ... ) LOGGER_PRINT_ASSERT(_loggerHandle, format, ##__VA_ARGS__ )
-#define LOGGER_EVENT(format, ... ) LOGGER_PRINT_EVENT(_loggerHandle, format, ##__VA_ARGS__ )
+#define LOG_ENTRY LOG_PRINT_ENTRY(_loggerHandle, NULL)
+#define LOG_EXIT LOG_PRINT_EXIT(_loggerHandle, NULL)
 
+#define LOG_TRACE(format, ... )	LOG_PRINT_TRACE(_loggerHandle, format, ##__VA_ARGS__)
+#define LOG_INFO(format, ... ) LOG_PRINT_INFO(_loggerHandle, format, ##__VA_ARGS__ )
+#define LOG_WARN(format, ... ) LOG_PRINT_WARN(_loggerHandle, format, ##__VA_ARGS__ )
+#define LOG_ERROR(format, ... ) LOG_PRINT_ERROR(_loggerHandle, format, ##__VA_ARGS__ )
+#define LOG_FATAL(format, ... ) LOG_PRINT_FATAL(_loggerHandle, format, ##__VA_ARGS__ )
+#define LOG_ASSERT(format, ... ) LOG_PRINT_ASSERT(_loggerHandle, format, ##__VA_ARGS__ )
+#define LOG_EVENT(format, ... ) LOG_PRINT_EVENT(_loggerHandle, format, ##__VA_ARGS__ )
 
+#define LOGLIB_INIT   loggerInitFromFileName(logger_get_handle_addr(), __FILE__, strlen(__FILE__))
+#define LOGLIB_TERM      loggerTerm(logger_get_handle())
+#define LOGLIB_ENABLE_TYPE(a)  loggerAppendDebugLevel(logger_get_handle(), (a))
+#define LOGLIB_DISABLE_TYPE(a) loggerRemoveDebugLevel(logger_get_handle(), (a))
+
+#define LOGLIB_ENTRY LOG_PRINT_ENTRY(logger_get_handle(), NULL)
+#define LOGLIB_EXIT LOG_PRINT_EXIT(logger_get_handle(), NULL)
+#define LOGLIB_TRACE(format, ... ) LOG_PRINT_TRACE(logger_get_handle(), format, ##__VA_ARGS__ )
+#define LOGLIB_INFO(format, ... ) LOG_PRINT_INFO(logger_get_handle(), format, ##__VA_ARGS__ )
+#define LOGLIB_WARN(format, ... ) LOG_PRINT_WARN(logger_get_handle(), format, ##__VA_ARGS__ )
+#define LOGLIB_ERROR(format, ... ) LOG_PRINT_ERROR(logger_get_handle(), format, ##__VA_ARGS__ )
+#define LOGLIB_FATAL(format, ... ) LOG_PRINT_FATAL(logger_get_handle(), format, ##__VA_ARGS__ )
+#define LOGLIB_ASSERT(format, ... ) LOG_PRINT_ASSERT(logger_get_handle(), format, ##__VA_ARGS__ )
+#define LOGLIB_EVENT(format, ... ) LOG_PRINT_EVENT(logger_get_handle(), format, ##__VA_ARGS__ )
 
 /* ASSERTIONS */
 #define ASSERT_NULL(a) \
 do { \
     if ((a)!=NULL) \
     { \
-        LOGGER_ASSERT("ASSERT_NULL "); \
+        LOG_ASSERT("ASSERT_NULL "); \
     } \
 } while (0)
 
@@ -59,7 +80,7 @@ do { \
 do { \
     if ((a)!=NULL) \
     { \
-        LOGGER_ASSERT("ASSERT_NULL " format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_NULL " format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -67,7 +88,7 @@ do { \
 do { \
     if ((a)==NULL) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_NULL "); \
+        LOG_ASSERT("ASSERT_NOT_NULL "); \
     } \
 } while (0)
 
@@ -76,7 +97,7 @@ do { \
 do { \
     if ((a)==NULL) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_NULL " format, ##__VA_ARGS__ ); \
+        LOG_ASSERT("ASSERT_NOT_NULL " format, ##__VA_ARGS__ ); \
     } \
 } while (0)
 
@@ -84,7 +105,7 @@ do { \
 do { \
     if ((a)!=true) \
     { \
-        LOGGER_ASSERT("ASSERT_true "); \
+        LOG_ASSERT("ASSERT_true "); \
     } \
 } while (0)		
 
@@ -92,7 +113,7 @@ do { \
 do { \
     if ((a)!=true) \
     { \
-    LOGGER_ASSERT("ASSERT_true " format, ##__VA_ARGS__); \
+    LOG_ASSERT("ASSERT_true " format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -100,7 +121,7 @@ do { \
 do { \
     if ((a)!=false) \
     { \
-        LOGGER_ASSERT("ASSERT_false "); \
+        LOG_ASSERT("ASSERT_false "); \
     } \
 } while (0)		
 
@@ -108,7 +129,7 @@ do { \
 do { \
     if ((a)!=false) \
     { \
-        LOGGER_ASSERT("ASSERT_false " format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_false " format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -116,7 +137,7 @@ do { \
 do { \
     if ((a)!=0) \
     { \
-        LOGGER_ASSERT("ASSERT_ZERO "); \
+        LOG_ASSERT("ASSERT_ZERO "); \
     } \
 } while (0)		
 
@@ -124,7 +145,7 @@ do { \
 do { \
     if ((a)!=0) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_ZERO " format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_NOT_ZERO " format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -132,7 +153,7 @@ do { \
 do { \
     if ((a)==0) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_ZERO "); \
+        LOG_ASSERT("ASSERT_NOT_ZERO "); \
     } \
 } while (0)		
 
@@ -140,7 +161,7 @@ do { \
 do { \
     if ((a)==0) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_ZERO " format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_NOT_ZERO " format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -148,7 +169,7 @@ do { \
 do { \
     if ((a)==0.0f) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_ZERO "); \
+        LOG_ASSERT("ASSERT_NOT_ZERO "); \
     } \
 } while (0)		
 
@@ -156,7 +177,7 @@ do { \
 do { \
     if ((a)==0.0f) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_ZERO " format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_NOT_ZERO " format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -164,7 +185,7 @@ do { \
 do { \
     if ((a)!=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_EQUALS %d!=%d",a,b); \
+        LOG_ASSERT("ASSERT_EQUALS %d!=%d",a,b); \
     } \
 } while (0)		
 
@@ -172,8 +193,8 @@ do { \
 do { \
     if ((a)!=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_EQUALS %d!=%d",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_EQUALS %d!=%d",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -181,7 +202,7 @@ do { \
 do { \
     if ((a)!=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_EQUALS %f!=%f",a,b); \
+        LOG_ASSERT("ASSERT_EQUALS %f!=%f",a,b); \
     } \
 } while (0)		
 
@@ -189,8 +210,8 @@ do { \
 do { \
     if ((a)!=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_EQUALS %f!=%f",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_EQUALS %f!=%f",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -198,7 +219,7 @@ do { \
 do { \
     if ((a)==(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
+        LOG_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
     } \
 } while (0)		
 
@@ -206,8 +227,8 @@ do { \
 do { \
     if ((a)==(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -215,7 +236,7 @@ do { \
 do { \
     if ((a)==(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
+        LOG_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
     } \
 } while (0)		
 
@@ -223,8 +244,8 @@ do { \
 do { \
 if ((a)==(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_NOT_EQUALS %d==%d",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -232,7 +253,7 @@ if ((a)==(b)) \
 do { \
     if ((a)<=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_GREATER_THAN %d<=%d",a,b); \
+        LOG_ASSERT("ASSERT_GREATER_THAN %d<=%d",a,b); \
     } \
 } while (0)		
 
@@ -240,8 +261,8 @@ do { \
 do { \
     if ((a)<=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_GREATER_THAN %d<=%d",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_GREATER_THAN %d<=%d",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -249,7 +270,7 @@ do { \
 do { \
     if ((a)<=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_GREATER_THAN %f<=%f",a,b); \
+        LOG_ASSERT("ASSERT_GREATER_THAN %f<=%f",a,b); \
     } \
 } while (0)		
 
@@ -257,8 +278,8 @@ do { \
 do { \
 if ((a)<=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_GREATER_THAN %f<=%f",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_GREATER_THAN %f<=%f",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -266,7 +287,7 @@ if ((a)<=(b)) \
 do { \
     if ((a)>=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_LESS_THAN %d>=%d",a,b); \
+        LOG_ASSERT("ASSERT_LESS_THAN %d>=%d",a,b); \
     } \
 } while (0)		
 
@@ -274,8 +295,8 @@ do { \
 do { \
     if ((a)>=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_LESS_THAN %d>=%d",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_LESS_THAN %d>=%d",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
@@ -283,7 +304,7 @@ do { \
 do { \
     if ((a)>=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_LESS_THAN %f>=%f",a,b); \
+        LOG_ASSERT("ASSERT_LESS_THAN %f>=%f",a,b); \
     } \
 } while (0)		
 
@@ -291,29 +312,57 @@ do { \
 do { \
     if ((a)>=(b)) \
     { \
-        LOGGER_ASSERT("ASSERT_LESS_THAN %f>=%f",a,b); \
-        LOGGER_ASSERT(format, ##__VA_ARGS__); \
+        LOG_ASSERT("ASSERT_LESS_THAN %f>=%f",a,b); \
+        LOG_ASSERT(format, ##__VA_ARGS__); \
     } \
 } while (0)
 
+#define LOG_ERROR_WRAPPER(file, format, ...) \
+	do {	\
+		if (file == stderr) {	\
+			LOG_ERROR(format, ##__VA_ARGS__);	\
+		} else {	\
+			diy_fprintf(file, format, ##__VA_ARGS__);	\
+		}	\
+	} while(0)
 
-#else /* NO LOGGER */
+#define LOGLIB_ERROR_WRAPPER(file, format, ...) \
+	do {	\
+		if (file == stderr) {	\
+			LOGLIB_ERROR(format, ##__VA_ARGS__);	\
+		} else {	\
+			diy_fprintf(file, format, ##__VA_ARGS__);	\
+		}	\
+	} while(0)
+
+#else /* NO LOG */
 
 
-#define LOGGER_INIT {}
-#define LOGGER_TERM {}
-#define LOGGER_ENABLE_TYPE(a)  {}
-#define LOGGER_DISABLE_TYPE(a) {}
+#define LOG_INIT {}
+#define LOG_TERM {}
+#define LOG_ENABLE_TYPE(a)  {}
+#define LOG_DISABLE_TYPE(a) {}
 
-#define LOGGER_ENTRY {}
-#define LOGGER_EXIT {}
-#define LOGGER_INFO(format, ... )  {}
-#define LOGGER_WARN(format, ... )  {}
-#define LOGGER_ERROR(format, ... )  {}
-#define LOGGER_FATAL(format, ... )  {}
-#define LOGGER_ASSERT(format, ... )  {}
-#define LOGGER_EVENT(format, ... )  {}
+#define LOG_ENTRY {}
+#define LOG_EXIT {}
 
+#define LOG_TRACE(format, ... )	{}
+#define LOG_INFO(format, ... )  {}
+#define LOG_WARN(format, ... )  {}
+#define LOG_ERROR(format, ... )  {}
+#define LOG_FATAL(format, ... )  {}
+#define LOG_ASSERT(format, ... )  {}
+#define LOG_EVENT(format, ... )  {}
+
+#define LOGLIB_ENTRY {}
+#define LOGLIB_EXIT {}
+#define LOGLIB_TRACE(format, ... )  {}
+#define LOGLIB_INFO(format, ... )  {}
+#define LOGLIB_WARN(format, ... )  {}
+#define LOGLIB_ERROR(format, ... )  {}
+#define LOGLIB_FATAL(format, ... )  {}
+#define LOGLIB_ASSERT(format, ... )  {}
+#define LOGLIB_EVENT(format, ... )  {}
 
 /* ASSERTIONS */
 #define ASSERT_NULL(a) {(a);} /* keep original expression-incase side-effects were intended */
@@ -347,13 +396,53 @@ do { \
 #define ASSERT_LESS_THAN_F(a,b)  {(a);(b);}
 #define ASSERT_LESS_THAN_F_MSG(a,b,format, ...)  {(a);(b);}
 
+#define LOG_ERROR_WRAPPER(file, format, ...) \
+	do {	\
+		diy_fprintf(file, format, ##__VA_ARGS__);	\
+	} while(0)
 
-#endif /* LOGGER_ENABLED */
+#define LOGLIB_ERROR_WRAPPER(file, format, ...) \
+	do {	\
+		diy_fprintf(file, format, ##__VA_ARGS__);	\
+	} while(0)
 
+#endif /* LOG_ENABLED */
+
+#define INIT_LOGGER(inifile)	\
+	do {	\
+		loggerLoadIniFile(inifile, (uint32_t)strlen(inifile));	\
+		LOG_INIT;	\
+	} while (0)
+
+
+#define EXIT_LOGGER	\
+	do {	\
+		LOG_EXIT;	\
+		LOG_TERM;	\
+	} while(0)
+
+#define INIT_LOGGER_LIB(external_handle_name, inifile)	\
+	do {	\
+		logger_init_handle(&external_handle_name);	\
+		loggerLoadIniFile(inifile, (uint32_t)strlen(inifile));	\
+		LOGLIB_INIT;	\
+	} while (0)
+
+
+#define EXIT_LOGGER_LIB	\
+	do {	\
+		LOGLIB_EXIT;	\
+		LOGLIB_TERM;	\
+	} while(0)
+
+
+void lsd_printf(const char *format, ...);
+
+void lsd_fprintf(FILE *stream, const char *format, ...);
 
 #ifdef __cplusplus
 }
 #endif
 
 
-#endif /* _LOGGER_H */
+#endif /* _LOG_H */

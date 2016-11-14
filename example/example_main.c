@@ -6,25 +6,25 @@
 
 void test ( void )
 {
-    LOGGER_OUTPUT_HANDLE _loggerHandle = NULL;
+    LOG_OUTPUT_HANDLE _loggerHandle = NULL;
     
     /* get logger permissions for main.c and set _loggerHandle */
-    LOGGER_INIT;
+    LOG_INIT;
 
-    LOGGER_ENTRY;
+    LOG_ENTRY;
     
-    LOGGER_INFO("This is an info");
+    LOG_INFO("This is an info");
     
-    LOGGER_WARN("This is a warning");
+    LOG_WARN("This is a warning");
     
-    LOGGER_ERROR("This is an error");
+    LOG_ERROR("This is an error");
     
-    LOGGER_FATAL("This is a fatal");
+    LOG_FATAL("This is a fatal");
     
-    LOGGER_EXIT;
+    LOG_EXIT;
     
     /* destroy _loggerHandle */
-    LOGGER_TERM;
+    LOG_TERM;
 }
 
 int main(int argc, const char * argv[])

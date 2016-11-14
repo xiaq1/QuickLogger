@@ -9,8 +9,8 @@
  */
 
 
-#ifndef _LOGGER_INITTERM_H
-#define _LOGGER_INITTERM_H
+#ifndef _LOG_INITTERM_H
+#define _LOG_INITTERM_H
 
 
 #ifdef __cplusplus
@@ -27,7 +27,7 @@ extern "C" {
 
 /**
  @brief maintains initialization count & acts when appropriate
- @details must be called each time a new #LOGGER_HANDLE_PRV is created
+ @details must be called each time a new #LOG_HANDLE_PRV is created
  @param[in] handle handle to be destroyed
  @return #true on success
  */
@@ -36,7 +36,7 @@ bool logger_init ( void );
 
 /**
  @brief opposite of #logger_init & will tear-down output connections when needed
- @details must be called before each #LOGGER_HANDLE_PRV is destroyed
+ @details must be called before each #LOG_HANDLE_PRV is destroyed
  @param[in] handle handle to be destroyed
  @return #true on success
  */
@@ -54,7 +54,7 @@ char* logger_currentOutput ( void );
  @brief get the current function handler for printing messages
  @return !NULL on success
  */
-LOGGER_TEMPLATE_SEND logger_getPrintHandler ( void );
+LOG_TEMPLATE_SEND logger_getPrintHandler ( void );
 
     
 #ifdef __cplusplus
@@ -62,4 +62,4 @@ LOGGER_TEMPLATE_SEND logger_getPrintHandler ( void );
 #endif
 
 
-#endif /* _LOGGER_INITTERM_H */
+#endif /* _LOG_INITTERM_H */

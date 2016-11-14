@@ -9,6 +9,9 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 #include "test_logger_output.h"
 #include "loggerFacade.h"
 
@@ -20,9 +23,9 @@ bool test_assertion_less_greater_than ( void );
 bool test_logger_output ( void );
 
 
-#define LOGGER_MSG "!!! MSG: hello world :MSG !!!"
+#define LOG_MSG "!!! MSG: hello world :MSG !!!"
 
-static LOGGER_OUTPUT_HANDLE _loggerHandle = LOGGER_OUTPUT_HANDLE_INVALID;
+static LOG_OUTPUT_HANDLE _loggerHandle = LOG_OUTPUT_HANDLE_INVALID;
 
 
 bool test_userVerifiedOutput ( void )
@@ -30,6 +33,9 @@ bool test_userVerifiedOutput ( void )
 	bool didPass = false;
 	char userInput = '\0';
 
+#if 1
+	didPass = true;
+#else
 	printf("\n\nDid that work? (y/n): ");
 
 	userInput = fgetc(stdin);
@@ -66,6 +72,7 @@ bool test_userVerifiedOutput ( void )
 
 		printf("\n");
 	}
+#endif
 
 	return didPass;
 }
@@ -79,7 +86,7 @@ bool test_assertion_null ( void )
 	printf("\n");
 	
 	printf("Testing assert NULL - assertion expected with msg\n");	
-	ASSERT_NULL_MSG((void *)1, LOGGER_MSG);
+	ASSERT_NULL_MSG((void *)1, LOG_MSG);
 	printf("\n");
 	
 	printf("Testing assert NULL - NO assertion expected\n");
@@ -91,7 +98,7 @@ bool test_assertion_null ( void )
 	printf("\n");
 	
 	printf("Testing assert NOT_NULL - assertion expected with msg\n");
-	ASSERT_NOT_NULL_MSG(NULL, LOGGER_MSG);
+	ASSERT_NOT_NULL_MSG(NULL, LOG_MSG);
 	printf("\n");
 	
 	printf("Testing assert NOT_NULL - NO assertion expected\n");
@@ -110,7 +117,7 @@ bool test_assertion_equals ( void )
 	printf("\n");
 	
 	printf("Testing assert equals - assertion expected with msg\n");	
-	ASSERT_EQUALS_MSG(0,1, LOGGER_MSG);
+	ASSERT_EQUALS_MSG(0,1, LOG_MSG);
 	printf("\n");
 	
 	printf("Testing assert equals - NO assertion expected\n");	
@@ -141,11 +148,11 @@ bool test_assertion_less_greater_than ( void )
 	printf("\n");
 	
 	printf("Testing assert greater than - assertion expected with MSG\n");	
-	ASSERT_GREATER_THAN_MSG(1,2, LOGGER_MSG);
+	ASSERT_GREATER_THAN_MSG(1,2, LOG_MSG);
 	printf("\n");
 	
 	printf("Testing assert greater than-float - assertion expected with MSG\n");	
-	ASSERT_GREATER_THAN_F_MSG(1.0f,2.0f, LOGGER_MSG);
+	ASSERT_GREATER_THAN_F_MSG(1.0f,2.0f, LOG_MSG);
 	printf("\n");
 	
 	printf("Testing assert greater than - NO assertion expected\n");	
@@ -157,7 +164,7 @@ bool test_assertion_less_greater_than ( void )
 	printf("\n");
 	
 	printf("Testing assert less than - assertion expected with MSG\n");	
-	ASSERT_LESS_THAN_MSG(2,1, LOGGER_MSG);
+	ASSERT_LESS_THAN_MSG(2,1, LOG_MSG);
 	printf("\n");
 	
 	printf("Testing assert less than - NO assertion expected\n");	
@@ -173,34 +180,34 @@ bool test_assertion_less_greater_than ( void )
 
 bool test_logger_output ( void )
 {
-	printf("\n\n*** LOGGER MANUAL CHECK ***\n\n");
+	printf("\n\n*** LOG MANUAL CHECK ***\n\n");
 	
-	printf("testing LOGGER_EVENT\n");
-	LOGGER_EVENT("LOGGER EVENT - hello world");
+	printf("testing LOG_EVENT\n");
+	LOG_EVENT("LOG EVENT - hello world");
 	printf("\n");
 	
-	printf("testing LOGGER_INFO\n");
-	LOGGER_INFO("LOGGER INFO - hello world");
+	printf("testing LOG_INFO\n");
+	LOG_INFO("LOG INFO - hello world");
 	printf("\n");
 	
-	printf("testing LOGGER_WARN\n");
-	LOGGER_WARN("LOGGER WARN - hello world");
+	printf("testing LOG_WARN\n");
+	LOG_WARN("LOG WARN - hello world");
 	printf("\n");
 	
-	printf("testing LOGGER_ERROR\n");
-	LOGGER_ERROR("LOGGER ERROR - hello world");
+	printf("testing LOG_ERROR\n");
+	LOG_ERROR("LOG ERROR - hello world");
 	printf("\n");
 	
-	printf("testing LOGGER_FATAL\n");
-	LOGGER_FATAL("LOGGER FATAL - hello world");
+	printf("testing LOG_FATAL\n");
+	LOG_FATAL("LOG FATAL - hello world");
 	printf("\n");
 	
-	printf("testing LOGGER_ENTRY\n");
-	LOGGER_ENTRY;
+	printf("testing LOG_ENTRY\n");
+	LOG_ENTRY;
 	printf("\n");
 	
-	printf("testing LOGGER_EXIT\n");
-	LOGGER_EXIT;
+	printf("testing LOG_EXIT\n");
+	LOG_EXIT;
 	printf("\n");
 	
 	return test_userVerifiedOutput();
@@ -208,14 +215,14 @@ bool test_logger_output ( void )
 
 bool test_logger_enableChange ( void )
 {
-    LOGGER_ENABLE_TYPE(LOGGER_LEVEL_EVENT);
-	printf("LOGGER_EVENT expected\n");
-	LOGGER_EVENT("EVENT msg");
+    LOG_ENABLE_TYPE(LOG_LEVEL_EVENT);
+	printf("LOG_EVENT expected\n");
+	LOG_EVENT("EVENT msg");
 	printf("\n");
     
-    LOGGER_DISABLE_TYPE(LOGGER_LEVEL_EVENT);
-	printf("LOGGER_EVENT disabled. NO output expected\n");
-	LOGGER_EVENT("EVENT msg");
+    LOG_DISABLE_TYPE(LOG_LEVEL_EVENT);
+	printf("LOG_EVENT disabled. NO output expected\n");
+	LOG_EVENT("EVENT msg");
 	printf("\n");
     
     return test_userVerifiedOutput();
@@ -225,9 +232,11 @@ bool test_logger ( void )
 {
 	bool testPass = false;
     
-    loggerSetSeverityEnablements_Default ( LOGGER_LEVEL_ENTRY | LOGGER_LEVEL_EXIT | LOGGER_LEVEL_TRACE | LOGGER_LEVEL_INFO | LOGGER_LEVEL_WARN | LOGGER_LEVEL_ERROR | LOGGER_LEVEL_FATAL | LOGGER_LEVEL_EVENT | LOGGER_LEVEL_ASSERT );
+    loggerSetSeverityEnablements_Default ( LOG_LEVEL_ENTRY | LOG_LEVEL_EXIT | LOG_LEVEL_TRACE | LOG_LEVEL_INFO | LOG_LEVEL_WARN | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL | LOG_LEVEL_EVENT | LOG_LEVEL_ASSERT );
     
-    LOGGER_INIT;
+    LOG_INIT;
+
+	while(1) {
     
 	if (test_logger_output() == false)
 	{
@@ -254,8 +263,10 @@ bool test_logger ( void )
 		printf("logger & assertion checks passed manual verification\n");
 		testPass = true;
 	}
+	sleep(1);
+	}
     
-    LOGGER_TERM;
+    LOG_TERM;
 	
 	return testPass;
 }
